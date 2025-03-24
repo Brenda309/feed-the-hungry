@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: FeedTheHungry
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sharemeals
+    username: postgres
+    password: Whatwhat45678
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true
