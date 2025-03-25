@@ -1,4 +1,4 @@
-package com.brenda.FeedTheHungry.user;
+package com.brenda.FeedTheHungry.model.user;
 
 import java.util.Collection;
 import java.util.List;
