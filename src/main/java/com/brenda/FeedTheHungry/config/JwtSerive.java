@@ -1,10 +1,8 @@
 package com.brenda.FeedTheHungry.config;
 
 import java.security.Key;
-import java.util.Base64.Decoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,9 @@ public class JwtSerive {
 public String extractUsername(String token){
     return null
 }
-public <T> T extractClaims(String token, Function<Claims, T> claimResolver){
-    final Claims claims = extractClaims(token);
-    return claimResolver.apply(claims);
+public <T> T extractClaims(String token, Function<Claims, T> claimsResolver){
+    final Claims claims = extractAllClaims(token);
+    return claimsResolver.apply(claims);
 }
 
 public String generateToken(UserDetails userDetails){
@@ -44,13 +42,26 @@ public String generateToken(
         .signWith(getSignInkey(), SignatureAlgorithm.HS256)
         .compact();
 }
-private Claims extractClaims(String token){
+public boolean isTokenValid (String token, UserDetails userDetails){
+    final String username = extractUsername(token);
+    return (username.equals(userDetails.getUsername())) && !isTokenExpited(token);
+    }
+    
+    private boolean isTokenExpited(String token) {
+        return extractExpiration(token).before(new Date());
+            }
+        
+            
+            private Date extractExpiration(String token) {
+               return  extractClaims(token, Claims::getExpiration);
+            }
+private Claims extractAllClaims(String token){
     return Jwts
     .parserBuilder()
     .setSigningKey(getSignInkey())
         .build()
         .parseClaimsJws(token)
-        .getBady();
+        .getBody();
     }
     
     private Key getSignInkey() {
