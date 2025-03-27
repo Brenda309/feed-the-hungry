@@ -16,14 +16,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthentication extends OncePerRequestFilter{
 
+// class to manipulate jwt service
+private final JwtSerive jwtService; 
+
     @Override
     protected void doFilterInternal(
       @NonNull  HttpServletRequest request, 
       @NonNull HttpServletResponse response, 
       @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'doFilterInternal'");
+     throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String userEmail;
+        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+        filterChain.doFilter(request, response);
+        return;
     }
-
+  jwt = authHeader.substring(7); //bearer with space equals to 7
+userEmail =  jwtService.extractUsername(jwt);// todo extract user email from jwt token
+}
 }
