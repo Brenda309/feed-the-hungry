@@ -1,6 +1,6 @@
 package com.brenda.FeedTheHungry.auth;
-
-
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +13,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+
+    private final AuthenticationManager authenticationManager;
     
   private final UserRepository userRepository;  
 private final PasswordEncoder passwordEncoder;
 private final JwtSerive jwtSerive;
+
+
     
 public AuthenticationResponse register(RegisterRequest request) {
 var user = user.build()
@@ -33,7 +37,15 @@ userRepository.save(user);
 }  
 
 public AuthenticationResponse authenticate(AuthenticationRequest request) {
-    return null;
+    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+        request.getEmail(),
+        request.getPassword()
+    ));
+    var user = userRepository.findByEmail(request.getEmail())
+    .orElseThrow();
+    
+    String jwtToken = jwtSerive.generateToken(user);
+    return AuthenticationResponse.builder().token(jwtToken).build();
 }
 
 }
