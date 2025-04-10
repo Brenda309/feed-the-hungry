@@ -1,21 +1,56 @@
-spring:
-  application:
-    name: FeedTheHungry
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
 
+spring:
   datasource:
+    password: Whatwhat45678
     url: jdbc:postgresql://localhost:5432/sharemeals
     username: postgres
-    password: Whatwhat45678
-    driver-class-name: org.postgresql.Driver
-
+  
   jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    
     hibernate:
       ddl-auto: update
-
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+    show-sql: true
+
+  mail:
+    host: localhost
+    port: 1025
+    username: hello
+    password: hello
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+
+# Admin security configuration
+admin:
+  registration:
+    secret-key: Q3HSbq1/Lh5grcub9GYkkbQ7icyRd0Z2DiCck/Ry/QU= # Remove quotes around the placeholder
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+app:
+  jwt:
+    secret: vZPyymC2wgun8eM+vdgEOAaPU2mrIjrtOzYFWhcXfXqojt7cYTKaPjp6kG/cRftzWzHBuiR7AKRXWHUyNHCKuw==
+    expiration-in-ms: 86400000 # 24 hours
